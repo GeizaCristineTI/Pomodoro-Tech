@@ -1,0 +1,55 @@
+:root {
+  --blue-light: #6fc3ff;
+  --blue-deep: #0057ff;
+  --orange: #ff8c42;
+  --purple: #9b59ff;
+  --bg: #0f1724;
+  --card: #0b1220;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    Segoe UI,
+    Roboto,
+    Arial;
+  background: linear-gradient(180deg, var(--bg), #071020);
+  color: #e6eef8;
+}
+.container {
+  max-width: 920px;
+  margin: 32px auto;
+  padding: 20px;
+}
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.row {
+  display: flex;
+  gap: 12px;
+}
+.col {
+  flex: 1;
+}
+.btn {
+  background: var(--blue-deep);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.muted {
+  opacity: 0.8;
+}

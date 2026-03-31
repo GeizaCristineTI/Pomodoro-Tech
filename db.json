@@ -1,0 +1,12 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Algoritmos - revisão",
+      "subject": "Algoritmos",
+      "sessions": 0
+    }
+  ],
+  "schedules": [{ "id": 1, "time": "18:00", "label": "Estudo diário" }],
+  "sessions": []
+}
