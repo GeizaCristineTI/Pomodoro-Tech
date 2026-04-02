@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estudo Pomodoro</title>
+    <link rel="stylesheet" href="static.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <div>
+          <h1 class="title">Estudo Pomodoro</h1>
+          <div class="subtitle">
+            Cronômetro Pomodoro para estudantes de TI — mantenha o foco com
+            ciclos e notificações.
+          </div>
+        </div>
+      </header>
+
+      <section class="grid">
+        <div>
+          <div class="card timer-card" aria-live="polite">
+            <div id="phaseName" class="muted">Estudo</div>
+            <div class="timer-display" role="timer" aria-atomic="true">
+              <div id="timeDisplay" class="time">25:00</div>
+              <div id="sessionInfo" class="muted">Sessão 1/8</div>
+            </div>
+
+            <div style="margin-top: 12px; display: flex; gap: 8px">
+              <button id="toggleBtn" class="btn">Iniciar</button>
+              <button id="skipBtn" class="btn orange">Pular</button>
+              <button id="resetBtn" class="btn">Reset</button>
+            </div>
+
+            <div style="margin-top: 12px">
+              <label class="muted">Tarefa ativa</label>
+              <input
+                id="taskLabel"
+                type="text"
+                placeholder="Ex: Algoritmos"
+                aria-label="Tarefa ativa"
+              />
+              <div id="sessionsList" class="muted" style="margin-top: 8px">
+                Nenhuma sessão registrada.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="muted">Agendar notificação diária</div>
+            <form id="scheduleForm" onsubmit="return false;">
+              <input
+                id="scheduleTime"
+                type="time"
+                aria-label="Hora do agendamento"
+              />
+              <div style="margin-top: 8px">
+                <button id="scheduleBtn" class="btn">Agendar</button>
+              </div>
+            </form>
+            <div id="schedulesList" style="margin-top: 12px" class="muted">
+              Nenhum agendamento.
+            </div>
+          </div>
+
+          <div style="height: 12px"></div>
+
+          <div class="card music-list">
+            <div style="font-weight: 700">Músicas para foco</div>
+            <ul>
+              <li>
+                <a
+                  href="https://youtu.be/f02mOEt11OQ?si=szO-kdGPWzUeizG0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Música 1 — Lo-fi Chill</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://youtu.be/SigIbCVMTzU?si=cj5MuNdeg3ibRZR8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Música 2 — Study Beats</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://youtu.be/0Qw8ctDj658?si=DVXvqLAcp7zoR9sC"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Música 3 — Focus Instrumental</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        const PHASES = [
+          { phase: "work", minutes: 25 },
+          { phase: "short", minutes: 5 },
+          { phase: "work", minutes: 25 },
+          { phase: "short", minutes: 5 },
+          { phase: "work", minutes: 25 },
+          { phase: "short", minutes: 5 },
+          { phase: "work", minutes: 25 },
+          { phase: "long", minutes: 30 },
+        ];
+
+        let index = 0;
+        let secondsLeft = PHASES[index].minutes * 60;
+        let running = false;
+        let intervalId = null;
+
+        const toggleBtn = document.getElementById("toggleBtn");
+        const skipBtn = document.getElementById("skipBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const timeDisplay = document.getElementById("timeDisplay");
+        const phaseName = document.getElementById("phaseName");
+        const sessionInfo = document.getElementById("sessionInfo");
+        const taskLabel = document.getElementById("taskLabel");
+        const sessionsList = document.getElementById("sessionsList");
+
+        const scheduleForm = document.getElementById("scheduleForm");
+        const scheduleTime = document.getElementById("scheduleTime");
+        const scheduleBtn = document.getElementById("scheduleBtn");
+        const schedulesList = document.getElementById("schedulesList");
+
+        let scheduleTimeouts = [];
+        let scheduleIntervals = [];
+
+        function formatTime(s) {
+          const m = Math.floor(s / 60);
+          const sec = s % 60;
+          return (
+            String(m).padStart(2, "0") + ":" + String(sec).padStart(2, "0")
+          );
+        }
+
+        function phaseLabel(p) {
+          return p === "work"
+            ? "Estudo"
+            : p === "short"
+              ? "Pausa curta"
+              : "Pausa longa";
+        }
+
+        function updateDisplay() {
+          timeDisplay.textContent = formatTime(secondsLeft);
+          phaseName.textContent = phaseLabel(PHASES[index].phase);
+          sessionInfo.textContent = `Sessão ${index + 1}/${PHASES.length}`;
+          showSessions();
+        }
+
+        function notify(body) {
+          if (
+            typeof Notification !== "undefined" &&
+            Notification.permission === "granted"
+          ) {
+            new Notification("Estudo Pomodoro", { body });
+          } else if (
+            typeof Notification !== "undefined" &&
+            Notification.permission !== "denied"
+          ) {
+            Notification.requestPermission().then((p) => {
+              if (p === "granted")
+                new Notification("Estudo Pomodoro", { body });
+            });
+          } else {
+            alert(body);
+          }
+        }
+
+        function onPhaseEnd() {
+          notify("Fim da fase: " + phaseLabel(PHASES[index].phase));
+          if (PHASES[index].phase === "work") {
+            recordSession();
+          }
+          index = (index + 1) % PHASES.length;
+          secondsLeft = PHASES[index].minutes * 60;
+          pause();
+          updateDisplay();
+        }
+
+        function tick() {
+          secondsLeft -= 1;
+          if (secondsLeft <= 0) {
+            onPhaseEnd();
+          } else {
+            updateDisplay();
+          }
+        }
+
+        function start() {
+          if (running) return;
+          running = true;
+          intervalId = setInterval(tick, 1000);
+          toggleBtn.textContent = "Pausar";
+        }
+
+        function pause() {
+          running = false;
+          if (intervalId) clearInterval(intervalId);
+          intervalId = null;
+          toggleBtn.textContent = "Iniciar";
+        }
+
+        function reset() {
+          pause();
+          index = 0;
+          secondsLeft = PHASES[0].minutes * 60;
+          updateDisplay();
+        }
+
+        function skip() {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+          index = (index + 1) % PHASES.length;
+          secondsLeft = PHASES[index].minutes * 60;
+          running = false;
+          toggleBtn.textContent = "Iniciar";
+          updateDisplay();
+        }
+
+        function recordSession() {
+          const label = (taskLabel.value || "Geral").trim();
+          const data = JSON.parse(localStorage.getItem("sessions") || "{}");
+          data[label] = (data[label] || 0) + 1;
+          localStorage.setItem("sessions", JSON.stringify(data));
+          showSessions();
+        }
+
+        function showSessions() {
+          const data = JSON.parse(localStorage.getItem("sessions") || "{}");
+          const keys = Object.keys(data);
+          if (!keys.length) {
+            sessionsList.textContent = "Nenhuma sessão registrada.";
+            return;
+          }
+          sessionsList.textContent = keys
+            .map((k) => `${k}: ${data[k]} sessões`)
+            .join(" | ");
+        }
+
+        function msUntil(hhmm) {
+          const [hh, mm] = hhmm.split(":").map(Number);
+          const now = new Date();
+          const next = new Date(now);
+          next.setHours(hh, mm, 0, 0);
+          if (next.getTime() <= now.getTime()) next.setDate(next.getDate() + 1);
+          return next.getTime() - now.getTime();
+        }
+
+        function clearScheduled() {
+          scheduleTimeouts.forEach((id) => clearTimeout(id));
+          scheduleIntervals.forEach((id) => clearInterval(id));
+          scheduleTimeouts = [];
+          scheduleIntervals = [];
+        }
+
+        function scheduleAll() {
+          clearScheduled();
+          const list = JSON.parse(localStorage.getItem("schedules") || "[]");
+          if (!list.length) {
+            schedulesList.textContent = "Nenhum agendamento.";
+            return;
+          }
+          schedulesList.innerHTML = "";
+          list.forEach((s, idx) => {
+            const el = document.createElement("div");
+            el.textContent = `${s.label || "Agendado"} — ${s.time}`;
+            schedulesList.appendChild(el);
+
+            const ms = msUntil(s.time);
+            const tId = setTimeout(() => {
+              notify(`Hora de estudar — ${s.label || s.time}`);
+              const iId = setInterval(
+                () => notify(`Hora de estudar — ${s.label || s.time}`),
+                24 * 60 * 60 * 1000,
+              );
+              scheduleIntervals.push(iId);
+            }, ms);
+            scheduleTimeouts.push(tId);
+          });
+        }
+
+        scheduleBtn.addEventListener("click", () => {
+          const t = scheduleTime.value;
+          if (!t) return alert("Escolha uma hora para agendar.");
+          const list = JSON.parse(localStorage.getItem("schedules") || "[]");
+          list.push({ time: t, label: "Estudo agendado" });
+          localStorage.setItem("schedules", JSON.stringify(list));
+          if (
+            typeof Notification !== "undefined" &&
+            Notification.permission !== "granted"
+          ) {
+            Notification.requestPermission().catch(() => {});
+          }
+          scheduleAll();
+          alert("Agendado para " + t);
+        });
+
+        // init
+        updateDisplay();
+        showSessions();
+        scheduleAll();
+
+        toggleBtn.addEventListener("click", () => {
+          if (running) pause();
+          else start();
+        });
+        skipBtn.addEventListener("click", skip);
+        resetBtn.addEventListener("click", reset);
+      })();
+    </script>
+  </body>
+</html>
