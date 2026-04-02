@@ -1,4 +1,4 @@
-# Pomodoro Studies
+# PomodorO Tech
 
 Aplicação para estudantes de TI: cronômetro Pomodoro, agendamento de notificações e registro de sessões. Desenvolvido com React + TypeScript e uma API mock com `json-server`.
 
