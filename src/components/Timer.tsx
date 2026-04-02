@@ -54,17 +54,19 @@ export default function Timer({
       // notificação
       notify(`Fim da fase: ${phaseInfo.phase}`);
       // se for work, registra sessão na API (associa à tarefa selecionada)
-      if (phaseInfo.phase === 'work') {
-        const task = tasks.find(t => t.id === selectedTaskId) || tasks[0]
+      if (phaseInfo.phase === "work") {
+        const task = tasks.find((t) => t.id === selectedTaskId) || tasks[0];
         if (task) {
           const rec = {
             taskId: task.id,
             durationMinutes: phaseInfo.minutes,
             startedAt: new Date().toISOString(),
-          }
-          createSession(rec).catch(() => {})
+          };
+          createSession(rec).catch(() => {});
           // incrementar contador local
-          patchTask(task.id, { sessions: task.sessions + 1 }).then(onTaskUpdated).catch(() => {})
+          patchTask(task.id, { sessions: task.sessions + 1 })
+            .then(onTaskUpdated)
+            .catch(() => {});
         }
       }
       // avançar fase
