@@ -1,5 +1,7 @@
 # Pomodoro Tech
 
+Acesse o site por esse link: https://pomodoro-tech.vercel.app/
+
 Aplicação para estudantes de TI: cronômetro Pomodoro, agendamento de notificações e registro de sessões. Desenvolvido com React + TypeScript e uma API mock com `json-server`.
 
 ## O que está incluído
