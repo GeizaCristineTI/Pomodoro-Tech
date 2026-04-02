@@ -9,6 +9,7 @@ import { Task } from "./types";
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchTasks()
@@ -29,9 +30,9 @@ export default function App() {
 
   return (
     <main className="container">
-      <h1 style={{ color: "var(--blue-light)" }}>Pomodoro Studies</h1>
+      <h1 style={{ color: "var(--blue-light)" }}>Estudo Pomodoro</h1>
       <p className="muted">
-        Aplicação para estudantes de TI: cronômetro Pomodoro, agendamento e
+        Aplicação para estudantes de TI: Cronômetro Pomodoro, agendamento e
         registro de sessões.
       </p>
       <section
@@ -56,7 +57,16 @@ export default function App() {
           )}
         </div>
         <div>
-          <Timer tasks={tasks} onTaskUpdated={handleUpdated} />
+          <div style={{ marginBottom: 8 }}>
+            <label className="muted">Tarefa ativa</label>
+            <select value={selectedTaskId ?? ''} onChange={e => setSelectedTaskId(e.target.value ? Number(e.target.value) : null)}>
+              <option value="">Nenhuma</option>
+              {tasks.map(t => (
+                <option key={t.id} value={t.id}>{t.title} — {t.subject}</option>
+              ))}
+            </select>
+          </div>
+          <Timer tasks={tasks} selectedTaskId={selectedTaskId} onTaskUpdated={handleUpdated} />
           <div style={{ height: 12 }} />
           <ScheduleForm />
           <div style={{ height: 12 }} />
@@ -64,28 +74,13 @@ export default function App() {
             <div style={{ fontWeight: 700 }}>Músicas para foco</div>
             <ul>
               <li>
-                <a
-                  href="https://youtu.be/f02mOEt11OQ?si=szO-kdGPWzUeizG0"
-                  target="_blank"
-                >
-                  Lo-fi Chill
-                </a>
+                <a href="https://youtu.be/f02mOEt11OQ?si=szO-kdGPWzUeizG0" target="_blank" rel="noopener noreferrer">Lo-fi Chill</a>
               </li>
               <li>
-                <a
-                  href="https://youtu.be/SigIbCVMTzU?si=cj5MuNdeg3ibRZR8"
-                  target="_blank"
-                >
-                  Study Beats
-                </a>
+                <a href="https://youtu.be/SigIbCVMTzU?si=cj5MuNdeg3ibRZR8" target="_blank" rel="noopener noreferrer">Study Beats</a>
               </li>
               <li>
-                <a
-                  href="https://youtu.be/0Qw8ctDj658?si=DVXvqLAcp7zoR9sC"
-                  target="_blank"
-                >
-                  Focus Instrumental
-                </a>
+                <a href="https://youtu.be/0Qw8ctDj658?si=DVXvqLAcp7zoR9sC" target="_blank" rel="noopener noreferrer">Focus Instrumental</a>
               </li>
             </ul>
           </div>

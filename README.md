@@ -34,3 +34,19 @@ Abra `http://localhost:5173`.
 
 - Para receber notificações permita `Notification` quando solicitado.
 - As músicas são links do YouTube na barra lateral.
+
+## Deploy e git
+
+1. Crie um repositório no GitHub e empurre o projeto:
+
+```bash
+git remote add origin git@github.com:<usuario>/<repo>.git
+git branch -M main
+git push -u origin main
+```
+
+2. Para deploy rápido use Vercel (ligue sua conta GitHub e importe o repo). A configuração padrão do Vite funciona automaticamente.
+
+## Observações finais
+- Use `npm run api` para iniciar a API mock (porta 4000) antes de abrir o front.
+- Se abrir localmente via Live Server (file://) a aplicação React não funcionará — use o servidor do Vite em `http://localhost:5173`.

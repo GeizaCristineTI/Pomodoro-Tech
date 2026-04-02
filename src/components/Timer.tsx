@@ -17,9 +17,11 @@ const PHASES: { phase: Phase; minutes: number }[] = [
 
 export default function Timer({
   tasks,
+  selectedTaskId,
   onTaskUpdated,
 }: {
   tasks: Task[];
+  selectedTaskId?: number | null;
   onTaskUpdated: (t: Task) => void;
 }) {
   const [index, setIndex] = useState(0);
@@ -51,18 +53,19 @@ export default function Timer({
     if (secondsLeft <= 0) {
       // notificação
       notify(`Fim da fase: ${phaseInfo.phase}`);
-      // se for work, registra sessão na API (associa à primeira tarefa selecionada)
-      if (phaseInfo.phase === "work" && tasks[0]) {
-        const rec = {
-          taskId: tasks[0].id,
-          durationMinutes: phaseInfo.minutes,
-          startedAt: new Date().toISOString(),
-        };
-        createSession(rec).catch(() => {});
-        // incrementar contador local
-        patchTask(tasks[0].id, { sessions: tasks[0].sessions + 1 })
-          .then(onTaskUpdated)
-          .catch(() => {});
+      // se for work, registra sessão na API (associa à tarefa selecionada)
+      if (phaseInfo.phase === 'work') {
+        const task = tasks.find(t => t.id === selectedTaskId) || tasks[0]
+        if (task) {
+          const rec = {
+            taskId: task.id,
+            durationMinutes: phaseInfo.minutes,
+            startedAt: new Date().toISOString(),
+          }
+          createSession(rec).catch(() => {})
+          // incrementar contador local
+          patchTask(task.id, { sessions: task.sessions + 1 }).then(onTaskUpdated).catch(() => {})
+        }
       }
       // avançar fase
       setIndex((i) => (i + 1) % PHASES.length);
@@ -113,7 +116,7 @@ export default function Timer({
         <div>
           <div style={{ fontSize: 18, fontWeight: 700 }}>
             {phaseInfo.phase === "work"
-              ? "Trabalho"
+              ? "Estudo"
               : phaseInfo.phase === "short"
                 ? "Pausa curta"
                 : "Pausa longa"}

@@ -1,10 +1,10 @@
 :root {
-  --blue-light: #6fc3ff;
-  --blue-deep: #0057ff;
-  --orange: #ff8c42;
-  --purple: #9b59ff;
-  --bg: #0f1724;
-  --card: #0b1220;
+  --blue-light: #7fd6ff; /* azul claro brilhante */
+  --blue-deep: #0033cc; /* azul escuro brilhante */
+  --orange: #ff8c42; /* laranja */
+  --white: #ffffff;
+  --bg: linear-gradient(180deg, #081125 0%, #071020 100%);
+  --card: rgba(255, 255, 255, 0.03);
 }
 * {
   box-sizing: border-box;
@@ -14,16 +14,93 @@ body,
 #root {
   height: 100%;
 }
+.container {
+  max-width: 920px;
+  margin: 32px auto;
+  padding: 20px;
+}
 body {
   margin: 0;
-  font-family:
-    Inter,
-    Segoe UI,
-    Roboto,
-    Arial;
-  background: linear-gradient(180deg, var(--bg), #071020);
-  color: #e6eef8;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
 }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.title {
+  color: var(--blue-light);
+  font-size: 28px;
+  font-weight: 800;
+}
+.subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+.card {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+  margin-top: 16px;
+}
+.btn {
+  background: var(--blue-deep);
+  color: var(--white);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+input,
+select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: var(--white);
+  width: 100%;
+}
+a {
+  color: var(--blue-light);
+  text-decoration: none;
+}
+.music-list ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.music-list li {
+  margin: 6px 0;
+}
+.timer-display {
+  text-align: center;
+  padding: 18px;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 51, 204, 0.15),
+    rgba(127, 214, 255, 0.06)
+  );
+}
+.timer-display .time {
+  font-size: 44px;
+  font-weight: 900;
+  color: var(--white);
+}
+.muted {
+  opacity: 0.85;
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .container {
   max-width: 920px;
   margin: 32px auto;
