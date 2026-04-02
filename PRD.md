@@ -1,8 +1,8 @@
-# Mini PRD — Pomodoro Studies
+# Mini PRD — Pomodoro Tech
 
 ## Problema
 
-Estudantes universitários de TI têm dificuldade em manter sessões de estudo focadas e lembrar de começar a estudar em horários planejados. Muitos perdem tempo trocando de tarefa, esquecem pausas estruturadas e não registram o tempo investido por disciplina.
+Estudantes universitários de TI têm dificuldade em manter sessões de estudo focadas e lembrar de começar a estudar em horários planejados. Muitos perdem tempo trocando de tarefa, esquecem de pausas estruturadas e não registram o tempo investido por disciplina.
 
 ## Por que vale a pena resolver
 
@@ -10,7 +10,7 @@ Melhorar a cadência de estudo com pausas regulares aumenta retenção e evita b
 
 ## Usuário alvo
 
-Estudantes de graduação em Ciência da Computação ou áreas relacionadas (18-30 anos), que estudam por conta própria em períodos noturnos e precisam de lembretes e estrutura para sessões concentradas.
+Estudantes de graduação em Tecnologia ou áreas relacionadas (sem limite de idade), que estudam por conta própria e precisam de lembretes e estrutura para sessões concentradas.
 
 ## Solução (funcionalidades essenciais)
 
