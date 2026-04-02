@@ -33,8 +33,14 @@ export default function App() {
       <h1 style={{ color: "var(--blue-light)" }}>Estudo Pomodoro</h1>
       <p className="muted">
         Aplicação para estudantes de TI: Cronômetro Pomodoro, agendamento e
-        registro de sessões.
-      </p>
+        registro de sessões. ⏱️ O que é o Método Pomodoro?
+
+O Método Pomodoro é uma técnica de gestão do tempo criada para aumentar o foco, a produtividade e a qualidade do aprendizado.
+
+Ele funciona com base em ciclos de estudo e pausas estratégicas. A cada 25 minutos de concentração total em uma tarefa, você faz uma pausa de 5 minutos. Após completar quatro ciclos, é recomendado fazer uma pausa maior, de aproximadamente 30 minutos.
+
+Essa abordagem ajuda o cérebro a manter a atenção por mais tempo, evitando o cansaço mental e melhorando a absorção do conteúdo
+        </p>
       <section
         style={{
           display: "grid",
